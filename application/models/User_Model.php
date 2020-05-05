@@ -14,10 +14,10 @@
 
 		public function login($username, $encrypt_password){
 			//Validate
-			$this->db->where('username', $username);
-			$this->db->where('password', $encrypt_password);
+			$this->db->where('_username', $username);
+			$this->db->where('_password', $encrypt_password);
 
-			$result = $this->db->get('users');
+			$result = $this->db->get('_uniqauth');
 
 			if ($result->num_rows() == 1) {
 				return $result->row(0);

@@ -145,3 +145,17 @@ Install Sticky on your home screen, and access it just like a regular app. Open 
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/custom.js"></script>
 </body>
+<?php if($this->uri->segment(2) == 'login'){ ?>
+	<script type="text/javascript">
+    $(window).on('load',function(){
+<?php if(validation_errors() == true){ ?>
+     
+    $('#validation_error_')[0].click();  //$('#about').get(0).click();
+    <?php } else { ?>
+    	        $('#menu-warning-1').modal('close');
+
+    
+<?php } ?>
+});
+</script>
+<?php } ?>
