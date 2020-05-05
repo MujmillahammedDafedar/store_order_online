@@ -1,0 +1,186 @@
+<!-- Section:- Account Kit -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://sdk.accountkit.com/en_US/sdk.js"></script>
+
+<script>
+// login callback
+function loginCallback(response) {
+	if (response.status === "PARTIALLY_AUTHENTICATED") {
+		var code = response.code;
+		var csrf = response.state;
+		console.log('Recieved Auth Token form facebook.');
+		$.post("js/verify.php", { code : code, csrf : csrf }, function(result){
+            console.log('Verified Successfully.');
+            // console.log(result);
+            if(result != ''){
+                $.post("set_login.php", { type : 'accountkit', mobilenumber : result }, function(response){
+                    console.log(response);
+                    window.open('test.php','_self');
+                });
+            }
+		});
+	} else if (response.status === "NOT_AUTHENTICATED") {
+		console.log('NOT_AUTHENTICATED');
+	} else if (response.status === "BAD_PARAMS") {
+		console.log('BAD_PARAMS');
+	} 
+} 
+
+/************* Section:- Facebook Login ***************/
+window.fbAsyncInit = function() {
+	FB.init({
+		appId      : '2399539133663315',
+		xfbml      : true,
+		version    : 'v3.3',
+		status: true,
+		cookie: true
+	});
+	FB.getLoginStatus(function(response){
+		if(response.status === 'connected'){
+
+		} else if(response.status === 'not_authorized') {
+
+		} else {
+
+		} // End of IF Else
+	}); // End of getLoginStatus
+}; // End of fbAsyncInit
+
+(function(d, s, id){
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+// This Function user Optinal, Currently not using.
+function getInfo() {
+	FB.api('/me', 'GET', {fields: 'first_name,last_name,name,id'}, function(response) {
+	// document.getElementById('status').innerHTML = response.id;
+
+	window.open('testy?viewmore=true#portfolio','_self');
+	// showhideform();
+	// document.getElementById('status').innerHTML = response.id;
+	//alert(response.id);
+	// fbinfo = response.id;
+	}); // End FB API
+} // End of Get Info
+
+
+function getResults(){
+	window.open('index.php?results=true#portfolio','_self');
+} // End of Get Results
+
+// This Function user Optinal, Currently not using.
+function logout(){
+	FB.logout(function(response) {
+		document.location.reload();
+	});
+} // End of Logout
+/************* End of Facebook Login ***************/
+
+var friendsList = '';
+var basicInfo = '';
+function login(){
+	FB.login(function(response){
+		if(response.status === 'connected'){
+			FB.api('/me', 'GET', {fields: 'first_name,last_name,name,id,email'}, function(response) {
+
+					// basicInfo = JSON.stringify(response);
+					basicInfo = response;
+					// console.log(basicInfo.first_name);
+    				$.post("set_login.php", { type : 'facebook', first_name : basicInfo.first_name, last_name : basicInfo.last_name, name : basicInfo.name, id : basicInfo.id,email : basicInfo.email }, function(response2){
+                        console.log(response2);
+                        window.open('test.php','_self');
+                    });					
+			});    // FB API  
+			/*FB.api('/me/friends', function(response2) {
+				friendsList = JSON.stringify(response2.data);
+				// var fbInfoArray = friendsList.concat(basicInfo);
+				var fbInfoArray = friendsList;
+				console.log(basicInfo);
+				
+
+				
+				document.getElementById("userinfo").value = fbInfoArray;
+				document.myform.submit();                        
+			}); */     					
+		} else if(response.status === 'not_authorized') {
+		    console.log('not_authorized');
+			// document.getElementById('status').innerHTML = 'we are not logged in.';
+			// alert("unauthorized");
+		} else {
+		    console.log('not_logged');
+			// document.getElementById('status').innerHTML = 'you are not logged in to Facebook';
+			//document.getElementById('logoufb').style.display = 'none';                
+		} // End of IF Else
+
+	// },{scope: 'email,user_friends', return_scopes: true}); // End of FB LOGIn
+	}); // End of FB LOGIn
+} // End of Login Function
+// get user basic info	
+
+
+/************** Section:- Account Kit **************/
+AccountKit_OnInteractive = function(){
+	AccountKit.init({
+		appId:"2399539133663315", 
+		state:"CSRF_TOKEN", 
+		version:"v1.1",
+		fbAppEventsEnabled:true,
+	});
+};
+
+// phone form submission handler
+function smsLogin() {
+	AccountKit.login(
+		'PHONE', 
+		{countryCode: "+91"},
+		loginCallback
+	);
+}
+
+</script>        
+
+<button onclick="login();" class="loginBtn loginBtn--facebook">Login with Facebook</button>
+<button  class="loginBtn loginBtn--mobilenumber" onclick="smsLogin();">Mobile Number</button>
+
+
+<html lang="en">
+  <head>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="612451370593-bf7j0fqj9ntdqm1uechb7i0541mvdrs1.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </head>
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <script>
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+      }
+    </script>
+    
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        });
+      }
+    </script>    
+    
+  </body>
+</html>
