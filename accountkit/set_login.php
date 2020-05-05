@@ -13,6 +13,7 @@ if(isset($_POST['type']) && $_POST['type'] == 'facebook' && isset($_POST['first_
     $_SESSION['id'] = $_POST['id'];
 }
 
+
 if(isset($_POST['type']) && $_POST['type'] == 'google' && isset($_POST['id'])){
     $_SESSION['name'] = $_POST['name'];
     $_SESSION['image_url'] = $_POST['image_url'];
