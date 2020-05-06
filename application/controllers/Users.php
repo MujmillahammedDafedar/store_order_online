@@ -63,9 +63,8 @@
 				if ($user_id) {
 					//Create Session
 					$user_data = array(
-								'user_id' => $user_id->id,
-				 				'username' => $username,
-				 				'email' => $user_id->email,
+								'user_id' => $user_id->uni_id,
+				 				'email' => $user_id->_username,
 				 				'login' => true
 				 	);
 
@@ -73,10 +72,11 @@
 
 					//Set Message
 					$this->session->set_flashdata('user_loggedin', 'You are now logged in.');
-					redirect('users/dashboard');
+					redirect(base_url());
 				}else{
+					//echo "<script>alert();</script>";
 					$this->session->set_flashdata('login_failed', 'Login is invalid.');
-					redirect('users/login');
+					redirect('users/login?auth=failed');
 				}
 				
 			}

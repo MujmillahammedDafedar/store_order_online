@@ -140,6 +140,8 @@ Install Sticky on your home screen, and access it just like a regular app. Open 
 </div>
 </div>
 </div>
+       <?php print_r( $this->session->flashdata()); ?>
+
 
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
@@ -147,15 +149,12 @@ Install Sticky on your home screen, and access it just like a regular app. Open 
 </body>
 <?php if($this->uri->segment(2) == 'login'){ ?>
 	<script type="text/javascript">
+       <?php echo $this->session->flashdata('login_failed'); ?>
+<?php if($this->input->get('auth') == 'failed'){ ?>
     $(window).on('load',function(){
-<?php if(validation_errors() == true){ ?>
-     
-    $('#validation_error_')[0].click();  //$('#about').get(0).click();
-    <?php } else { ?>
-    	        $('#menu-warning-1').modal('close');
+     $('#menu-warning-1').showMenu();
+     });
 
-    
-<?php } ?>
-});
 </script>
+<?php } ?>
 <?php } ?>

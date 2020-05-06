@@ -20,7 +20,7 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		 if(empty($this->session->userdata('Identified_user')) && !$this->session->userdata('Identified_user'))
+		 if(empty($this->session->userdata('user_id')) && !$this->session->userdata('user_id'))
 		 	redirect(base_url().'authentication');
 		$this->load->view('header');
 		$this->load->view('homepage');
@@ -29,6 +29,11 @@ class Welcome extends CI_Controller {
 	public function auth(){
 		$this->load->view('header');
 		$this->load->view('login');
+		$this->load->view('footer');
+	}
+	public function storeDetails(){
+		$this->load->view('header');
+		$this->load->view('store_details');
 		$this->load->view('footer');
 	}
 }
