@@ -33,7 +33,7 @@
 </div>
 <div id="footer-bar" class="footer-bar-1">
 <a href="<?php echo base_url()?>" class="active-nav"><i class="fa fa-home"></i><span>Home</span></a>
-<a href="<?php echo base_url()?>"><i class="fa fa-envelope"></i><span>Chat</span></a>
+<a href="<?php echo base_url()?>my-chats"><i class="fa fa-envelope"></i><span>Chat</span></a>
 <a href="<?php echo base_url()?>"><i class="fa fa-shopping-cart"></i>
 <span>My order</span></a>
 <a href="#" data-menu="menu-settings"><i class="fa fa-cog"></i><span>Settings</span></a>

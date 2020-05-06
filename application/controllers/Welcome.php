@@ -36,4 +36,14 @@ class Welcome extends CI_Controller {
 		$this->load->view('store_details');
 		$this->load->view('footer');
 	}
+	public function chat(){
+		$this->load->view('header');
+		$this->load->view('chat');
+		$this->load->view('footer');
+	}
+	public function chatList(){
+		$this->load->view('header');
+		$this->load->view('chat_list');
+		$this->load->view('footer');
+	}
 }
