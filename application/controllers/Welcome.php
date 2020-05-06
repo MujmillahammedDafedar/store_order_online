@@ -22,28 +22,34 @@ class Welcome extends CI_Controller {
 	{
 		 if(empty($this->session->userdata('user_id')) && !$this->session->userdata('user_id'))
 		 	redirect(base_url().'authentication');
-		$this->load->view('header');
-		$this->load->view('homepage');
-		$this->load->view('footer');
+		$this->load->view('user/header');
+		$this->load->view('user/homepage');
+		$this->load->view('user/footer');
 	}
 	public function auth(){
-		$this->load->view('header');
-		$this->load->view('login');
-		$this->load->view('footer');
+		$this->load->view('user/login');
+	}
+	public function newaccount(){
+		$this->load->view('user/register');
 	}
 	public function storeDetails(){
-		$this->load->view('header');
-		$this->load->view('store_details');
-		$this->load->view('footer');
+		$this->load->view('user/header');
+		$this->load->view('user/store_details');
+		$this->load->view('user/footer');
 	}
 	public function chat(){
-		$this->load->view('header');
-		$this->load->view('chat');
-		$this->load->view('footer');
+		$this->load->view('user/header');
+		$this->load->view('user/chat');
+		$this->load->view('user/footer');
 	}
 	public function chatList(){
-		$this->load->view('header');
-		$this->load->view('chat_list');
-		$this->load->view('footer');
+		$this->load->view('user/header');
+		$this->load->view('user/chat_list');
+		$this->load->view('user/footer');
+	}
+	public function myOrders(){
+		$this->load->view('user/header');
+		$this->load->view('user/my_order');
+		$this->load->view('user/footer');
 	}
 }

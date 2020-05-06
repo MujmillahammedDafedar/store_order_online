@@ -50,9 +50,7 @@
 			$this->form_validation->set_rules('password', 'Password', 'required');
 
 			if($this->form_validation->run() === FALSE){
-				$this->load->view('header');
-				$this->load->view('login');
-				$this->load->view('footer');
+				$this->load->view('user/login');
 			}else{
 				// get username and Encrypt Password
 				$username = $this->input->post('username');

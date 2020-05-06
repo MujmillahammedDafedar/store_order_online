@@ -53,9 +53,12 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['authentication'] = $route['default_controller'].'/auth';
+$route['create-account'] = $route['default_controller'].'/newaccount';
+
 $route['store-details'] = $route['default_controller'].'/storeDetails';
 $route['chat'] = $route['default_controller'].'/chat';
 $route['my-chats'] = $route['default_controller'].'/chatList';
+$route['my-oders'] = $route['default_controller'].'/myOrders';
 
 
 

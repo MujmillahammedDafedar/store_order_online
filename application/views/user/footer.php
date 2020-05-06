@@ -140,13 +140,22 @@ Install Sticky on your home screen, and access it just like a regular app. Open 
 </div>
 </div>
 </div>
-       <?php print_r( $this->session->flashdata()); ?>
 
 
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/custom.js"></script>
 </body>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('.footer-bar-1 a').click(function(){
+    $('a').removeClass('active-nav');
+    $(this).addClass('active-nav');
+});
+
+});
+</script>
 <?php if($this->uri->segment(2) == 'login'){ ?>
 	<script type="text/javascript">
        <?php echo $this->session->flashdata('login_failed'); ?>

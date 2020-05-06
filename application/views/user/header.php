@@ -26,15 +26,14 @@
 	<div id="page">
 <div class="header header-fixed header-logo-center">
 <a href="<?php echo base_url();?>" class="header-title">My stores</a>
-<?php if($this->uri->segment(1)) {?>
+
 <a href="#" data-back-button class="header-icon header-icon-1"><i class="fas fa-arrow-left"></i></a>
-<?php } ?>
 <a href="#" data-toggle-theme class="header-icon header-icon-4"><i class="fas fa-lightbulb"></i></a>
 </div>
 <div id="footer-bar" class="footer-bar-1">
-<a href="<?php echo base_url()?>" class="active-nav"><i class="fa fa-home"></i><span>Home</span></a>
+<a href="<?php echo base_url()?>" ><i class="fa fa-home"></i><span>Home</span></a>
 <a href="<?php echo base_url()?>my-chats"><i class="fa fa-envelope"></i><span>Chat</span></a>
-<a href="<?php echo base_url()?>"><i class="fa fa-shopping-cart"></i>
+<a href="<?php echo base_url()?>my-oders"><i class="fa fa-shopping-cart"></i>
 <span>My order</span></a>
 <a href="#" data-menu="menu-settings"><i class="fa fa-cog"></i><span>Settings</span></a>
 </div>
