@@ -15,40 +15,32 @@
 
 <link rel="manifest" href="_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
 <link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png">
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-auth.js"></script>
+
 </head>
-<?php echo form_open('users/login'); ?>
 <div class="page-content header-clear-medium">
 <div class="card card-style">
 <div class="content mt-4 mb-0">
 <h1 class="text-center font-900 font-40 text-uppercase mb-0">Login</h1>
 <p class="bottom-0 text-center color-highlight font-11">Let's get you logged in</p>
-<?php if(validation_errors()){ ?>
-<div class="alert alert-danger">
-  <?php echo validation_errors(); ?>
-</div>
-<?php } ?>
+
 <div class="input-style has-icon input-style-1 input-required pb-1">
 <i class="input-icon fa fa-user color-theme"></i>
-<span>Username</span>
+<span>Mobile number</span>
 <em>(required)</em>
-<input type="name" name="username" placeholder="Username">
+<input type="tel" id="phoneNumber" name="number" placeholder="Enter Mobile number">
 </div>
-<div class="input-style has-icon input-style-1 input-required pb-1">
+<div id="otp-div" class="input-style has-icon input-style-1 input-required pb-1" style="display: none;">
 <i class="input-icon fa fa-lock color-theme"></i>
-<span>Password</span>
+<span>OTP</span>
 <em>(required)</em>
-<input type="name" name="password" placeholder="Password">
+<input type="text" name="password" id="code" placeholder="Enter OTP">
 </div>
-<button type="submit" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark">Login</button>
 
-<div class="divider"></div>
-<a href="#" class="btn btn-icon btn-m btn-full shadow-l bg-facebook text-uppercase font-900 text-left"><i class="fab fa-facebook-f text-center"></i>Login with Facebook</a>
-<a href="#" class="btn btn-icon btn-m mt-2 btn-full shadow-l bg-twitter text-uppercase font-900 text-left"><i class="fab fa-twitter text-center"></i>Login with Twitter</a>
-<div class="divider mt-4 mb-3"></div>
-<div class="d-flex">
-<div class="w-50 font-11 pb-2 color-theme opacity-60 pb-3 text-left"><a href="#" class="color-theme">Create Account</a></div>
-<div class="w-50 font-11 pb-2 color-theme opacity-60 pb-3 text-right"><a href="#" class="color-theme">Forgot Credentials</a></div>
-</div>
+<button type="submit" id="hidebutton"  onclick="googleSignin()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark">Get otp</button>
+
+<button type="submit" id="submitOtp"  onclick="submitPhoneNumberAuthCode()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark" style="display: none">Confirm</button>
 </div>
 </div>
 
@@ -68,7 +60,102 @@ You can continue with your previous actions.<br> Easy to attach these to success
 </p>
 <a href="#" class="close-menu btn btn-m btn-center-m button-s shadow-l rounded-s text-uppercase font-900 bg-white">Go Back</a>
 </div>
-<?php echo form_close() ?>
+  <div id="recaptcha-container"></div>
+
+
+    <script>
+      // Paste the config your copied earlier
+     const firebaseConfig = {
+  apiKey: "AIzaSyBEAzaw4UdtN-110RFcEiD1IGWTIAD0Wgs",
+  authDomain: "nearme-bd535.firebaseapp.com",
+  databaseURL: "https://nearme-bd535.firebaseio.com",
+  projectId: "nearme-bd535",
+  storageBucket: "nearme-bd535.appspot.com",
+  messagingSenderId: "807407970976",
+  appId: "1:807407970976:web:b540e6dc5a1b66d75b77c5",
+  measurementId: "G-Q3TYF4R8P6"
+};
+
+      firebase.initializeApp(firebaseConfig);
+
+
+      function googleSignin() {
+      	base_proveider =new firebase.auth.GoogleAuthProvider()
+      	firebase.auth().signInWithRedirect(base_proveider).then(function(result){
+      		console.log(result)
+      		console.log("success google account linked")
+      	}).catch(function(err){
+      		console.log(err)
+      		console.log('fialed to do')
+
+      	})
+      }
+      // Create a Recaptcha verifier instance globally
+      // Calls submitPhoneNumberAuth() when the captcha is verified
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+        "recaptcha-container",
+        {
+          size: "normal",
+          callback: function(response) {
+            submitPhoneNumberAuth();
+          }
+        }
+      );
+
+      // This function runs when the 'sign-in-button' is clicked
+      // Takes the value from the 'phoneNumber' input and sends SMS to that phone number
+      function submitPhoneNumberAuth() {
+		var divId = document.getElementById("otp-div");
+		var getOtpbutton = document.getElementById("hidebutton");
+		var confirmButton = document.getElementById("submitOtp");
+
+
+        var phoneNumber = document.getElementById("phoneNumber").value;
+        var appVerifier = window.recaptchaVerifier;
+            divId.style.display = "block";
+            getOtpbutton.style.display = "none";
+            confirmButton.style.display = "block";
+
+
+        firebase
+          .auth()
+          .signInWithPhoneNumber(phoneNumber, appVerifier)
+          .then(function(confirmationResult) {
+            window.confirmationResult = confirmationResult;
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
+
+      // This function runs when the 'confirm-code' button is clicked
+      // Takes the value from the 'code' input and submits the code to verify the phone number
+      // Return a user object if the authentication was successful, and auth is complete
+      function submitPhoneNumberAuthCode() {
+        var code = document.getElementById("code").value;
+
+        confirmationResult
+          .confirm(code)
+          .then(function(result) {
+            var user = result.user;
+            console.log(user);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
+
+      //This function runs everytime the auth state changes. Use to verify if the user is logged in
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          console.log("USER LOGGED IN");
+        } else {
+          // No user is signed in.
+          console.log("USER NOT LOGGED IN");
+        }
+      });
+    </script>
+
 
 
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
@@ -86,3 +173,5 @@ You can continue with your previous actions.<br> Easy to attach these to success
 </script>
 <?php } ?>
 <?php } ?>
+
+  
