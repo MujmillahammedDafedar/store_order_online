@@ -17,7 +17,14 @@
 <link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png">
 <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-auth.js"></script>
-
+<style type="text/css">
+	.btn-icon:hover {
+    /* color: #fff; */
+}
+.btn-icon:hover {
+    /* color: #fff; */
+}
+</style>
 </head>
 <div class="page-content header-clear-medium">
 <div class="card card-style">
@@ -37,10 +44,17 @@
 <em>(required)</em>
 <input type="text" name="password" id="code" placeholder="Enter OTP">
 </div>
-
-<button type="submit" id="hidebutton"  onclick="googleSignin()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark">Get otp</button>
-
+<button type="submit" id="hidebutton"  onclick="submitPhoneNumberAuth()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark">Get otp</button>
 <button type="submit" id="submitOtp"  onclick="submitPhoneNumberAuthCode()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark" style="display: none">Confirm</button>
+<div class="divider"></div>
+
+
+
+<a href="#" onclick="toggleSignIn()" class="btn btn-icon btn-m btn-full rounded-s shadow-l text-uppercase font-900 text-left">  <img width="20px" style="    margin-left: -33px;
+" alt="Google sign-in" 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" /> &nbsp &nbsp &nbsp &nbsp Register with Google</a>
+<a href="#" class="btn btn-icon btn-m mt-2 mb-4 btn-full rounded-s shadow-l bg-twitter text-uppercase font-900 text-left" style="display: none;"><i class="fab fa-twitter text-center"></i>Register with Twitter</a>
+
 </div>
 </div>
 
@@ -79,23 +93,129 @@ You can continue with your previous actions.<br> Easy to attach these to success
       firebase.initializeApp(firebaseConfig);
 
 
-      function googleSignin() {
-      	base_proveider =new firebase.auth.GoogleAuthProvider()
-      	firebase.auth().signInWithRedirect(base_proveider).then(function(result){
-      		console.log(result)
-      		console.log("success google account linked")
-      	}).catch(function(err){
-      		console.log(err)
-      		console.log('fialed to do')
 
-      	})
+       //   * Function called when clicking the Login/Logout button.
+     //*/
+    // [START buttoncallback]
+    function toggleSignIn() {
+      if (!firebase.auth().currentUser) {
+        // [START createprovider]
+        var provider = new firebase.auth.GoogleAuthProvider();
+        // [END createprovider]
+        // [START addscopes]
+        provider.addScope('https://www.googleapis.com/auth/plus.login');
+        // [END addscopes]
+        // [START signin]
+        firebase.auth().signInWithRedirect(provider);
+        // [END signin]
+      } else {
+        // [START signout]
+        firebase.auth().signOut();
+        // [END signout]
       }
+      // [START_EXCLUDE]
+     // document.getElementById('quickstart-sign-in').disabled = true;
+      // [END_EXCLUDE]
+    }
+    // [END buttoncallback]
+
+
+    /**
+     * initApp handles setting up UI event listeners and registering Firebase auth listeners:
+     *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+     *    out, and that is where we update the UI.
+     *  - firebase.auth().getRedirectResult(): This promise completes when the user gets back from
+     *    the auth redirect flow. It is where you can get the OAuth access token from the IDP.
+     */
+    function initApp() {
+      // Result from Redirect auth flow.
+      // [START getidptoken]
+      firebase.auth().getRedirectResult().then(function(result) {
+        if (result.credential) {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = result.credential.accessToken;
+          // [START_EXCLUDE]
+          console.log(result);
+          // document.getElementById('quickstart-oauthtoken').textContent = token;
+           //Get verified user info here
+           var additionalUserInfo = result.additionalUserInfo; 
+           //console.log(result); 
+           //console.log('Here is your verified data');
+           window.open("<?php echo base_url()?>Users/userdata?name="+result.additionalUserInfo.profile["name"]+'&&id='+result.additionalUserInfo.profile["id"]+'&&picture='+result.additionalUserInfo.profile["picture"]+'&&verified_email='+result.additionalUserInfo.profile["verified_email"]+'&&email='+additionalUserInfo.profile["email"], '_self');
+
+
+        } else {
+          // document.getElementById('quickstart-oauthtoken').textContent = 'null';
+          // [END_EXCLUDE]
+        }
+        // The signed-in user info.
+        var user = result.user;
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/account-exists-with-different-credential') {
+          alert('You have already signed up with a different auth provider for that email.');
+          // If you are using multiple auth providers on your app you should handle linking
+          // the user's accounts here.
+        } else {
+          console.error(error);
+        }
+        // [END_EXCLUDE]
+      });
+      // [END getidptoken]
+
+      // Listening for auth state changes.
+      // [START authstatelistener]
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          var displayName = user.displayName;
+          var email = user.email;
+          var emailVerified = user.emailVerified;
+          var photoURL = user.photoURL;
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          var providerData = user.providerData;
+        //  console.log(user);
+          // [START_EXCLUDE]
+          // document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+          // document.getElementById('quickstart-sign-in').textContent = 'Sign out';
+          // document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+          // [END_EXCLUDE]
+        } else {
+          // User is signed out.
+          // [START_EXCLUDE]
+          // document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+          // document.getElementById('quickstart-sign-in').textContent = 'Sign in with Google';
+          // document.getElementById('quickstart-account-details').textContent = 'null';
+          // document.getElementById('quickstart-oauthtoken').textContent = 'null';
+          // [END_EXCLUDE]
+        }
+        // [START_EXCLUDE]
+        // document.getElementById('quickstart-sign-in').disabled = false;
+        // [END_EXCLUDE]
+      });
+      // [END authstatelistener]
+
+      // document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+    }
+
+    window.onload = function() {
+      initApp();
+    };
+
       // Create a Recaptcha verifier instance globally
       // Calls submitPhoneNumberAuth() when the captcha is verified
       window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
         "recaptcha-container",
         {
-          size: "normal",
+          size: "large",
           callback: function(response) {
             submitPhoneNumberAuth();
           }
@@ -161,17 +281,4 @@ You can continue with your previous actions.<br> Easy to attach these to success
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/custom.js"></script>
-</body>
-<?php if($this->uri->segment(2) == 'login'){ ?>
-	<script type="text/javascript">
-       <?php echo $this->session->flashdata('login_failed'); ?>
-<?php if($this->input->get('auth') == 'failed'){ ?>
-    $(window).on('load',function(){
-     $('#menu-warning-1').showMenu();
-     });
-
-</script>
-<?php } ?>
-<?php } ?>
-
-  
+</body>  

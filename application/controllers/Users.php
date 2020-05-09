@@ -1,6 +1,33 @@
 <?php
 	class Users extends CI_Controller
 	{
+		public function userdata(){
+			
+			if($this->input->get('email')){
+                 $checkEmailExist = $this->db->get_where('firebase_auth', array('email_' => $this->input->get('email')))->row(); 
+                 if(empty($checkEmailExist)){
+                 //	Array ( [name] => Muzammil Dafedar [id] => 110095427481473300751 [picture] => https://lh3.googleusercontent.com/a-/AOh14Ghl3DZMkK-TuhwMQQSDbbefgUKKyd_-PKVyK7L7yA [verified_email] => true [email] => mujmildafedaar@gmail.com )
+                 	//this is array format
+                 		$data = array(
+                 			'name_' => $this->input->get('name'), 
+                 			'google_id_' => $this->input->get('id'),                       
+                 			'picture_' => $this->input->get('picture'), 
+                 			'verified_email_' => $this->input->get('verified_email'), 
+                 			'email_' => $this->input->get('email'), 
+                 		);
+                 		$this->db->insert('firebase_auth', $data);
+                 		
+                 		$this->session->set_flashdata('success', 'You have registered'); 
+                 		echo "account registered and loged"; 
+
+                 } else {
+                 	 echo "activate session";
+
+                 }
+				
+			}
+		}
+
 		public function dashboard(){
 			if(!$this->session->userdata('login')) {
 				redirect('users/login');
