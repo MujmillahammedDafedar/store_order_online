@@ -32,12 +32,17 @@
 <h1 class="text-center font-900 font-40 text-uppercase mb-0">Login</h1>
 <p class="bottom-0 text-center color-highlight font-11">Let's get you logged in</p>
 
-<div class="input-style has-icon input-style-1 input-required pb-1">
+<div id="number-div" class="input-style has-icon input-style-1 input-required pb-1">
 <i class="input-icon fa fa-user color-theme"></i>
 <span>Mobile number</span>
 <em>(required)</em>
 <input type="tel" id="phoneNumber" name="number" placeholder="Enter Mobile number">
 </div>
+<div class="input-style has-icon input-style-1 input-required pb-1">
+
+  <div id="recaptcha-container"></div>
+</div>
+
 <div id="otp-div" class="input-style has-icon input-style-1 input-required pb-1" style="display: none;">
 <i class="input-icon fa fa-lock color-theme"></i>
 <span>OTP</span>
@@ -74,7 +79,6 @@ You can continue with your previous actions.<br> Easy to attach these to success
 </p>
 <a href="#" class="close-menu btn btn-m btn-center-m button-s shadow-l rounded-s text-uppercase font-900 bg-white">Go Back</a>
 </div>
-  <div id="recaptcha-container"></div>
 
 
     <script>
@@ -215,7 +219,7 @@ You can continue with your previous actions.<br> Easy to attach these to success
       window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
         "recaptcha-container",
         {
-          size: "large",
+          size: "normal",
           callback: function(response) {
             submitPhoneNumberAuth();
           }
@@ -228,11 +232,10 @@ You can continue with your previous actions.<br> Easy to attach these to success
 		var divId = document.getElementById("otp-div");
 		var getOtpbutton = document.getElementById("hidebutton");
 		var confirmButton = document.getElementById("submitOtp");
-
-
+        var captchId = document.getElementById("recaptcha-container");
+        var numberDiv = document.getElementById("number-div");
         var phoneNumber = document.getElementById("phoneNumber").value;
         var appVerifier = window.recaptchaVerifier;
-            divId.style.display = "block";
             getOtpbutton.style.display = "none";
             confirmButton.style.display = "block";
 
@@ -242,6 +245,12 @@ You can continue with your previous actions.<br> Easy to attach these to success
           .signInWithPhoneNumber(phoneNumber, appVerifier)
           .then(function(confirmationResult) {
             window.confirmationResult = confirmationResult;
+                        divId.style.display = "block";
+                        captchId.style.display="none";
+                        numberDiv.style.display="none";
+
+
+
           })
           .catch(function(error) {
             console.log(error);
@@ -281,4 +290,59 @@ You can continue with your previous actions.<br> Easy to attach these to success
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/custom.js"></script>
+<script type="text/javascript">
+	// Resize reCAPTCHA to fit width of container
+// Since it has a fixed width, we're scaling
+// using CSS3 transforms
+// ------------------------------------------
+// captchaScale = containerWidth / elementWidth
+
+function scaleCaptcha(elementWidth) {
+  // Width of the reCAPTCHA element, in pixels
+  var reCaptchaWidth = 304;
+  // Get the containing element's width
+	var containerWidth = $('#recaptcha-container').width();
+  
+  // Only scale the reCAPTCHA if it won't fit
+  // inside the container
+  if(reCaptchaWidth > containerWidth) {
+    // Calculate the scale
+    var captchaScale = containerWidth / reCaptchaWidth;
+    // Apply the transformation
+    $('#recaptcha-container').css({
+      'transform':'scale('+captchaScale+')'
+    });
+  }
+}
+
+$(function() { 
+ 
+  // Initialize scaling
+  scaleCaptcha();
+  
+  // Update scaling on window resize
+  // Uses jQuery throttle plugin to limit strain on the browser
+  $(window).resize( $.throttle( 100, scaleCaptcha ) );
+  
+});
+</script>
+<style type="text/css">
+	
+#recaptcha-container {
+width: 960px;
+position: relative;
+margin:0 auto;
+line-height: 1.4em;
+}
+
+/* If in mobile screen with maximum width 479px. The iPhone screen resolution is 320x480 px (except iPhone4, 640x960) */    
+@media (max-width: 1200px) {
+  #recaptcha-container > div > div {
+    transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform-origin: 0 0;
+    -webkit-transform-origin: 0 0
+  }
+} 
+</style>
 </body>  
