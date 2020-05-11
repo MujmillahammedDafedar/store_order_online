@@ -20,34 +20,48 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		 if(empty($this->session->userdata('user_id')) && !$this->session->userdata('user_id'))
+		
+	}
+	public function UseHomepage()
+	{
+		 if(empty($this->session->userdata('_verifiedUser')) && !$this->session->userdata('_verifiedUser'))
 		 	redirect(base_url().'authentication');
 		$this->load->view('user/header');
 		$this->load->view('user/homepage');
 		$this->load->view('user/footer');
 	}
 	public function auth(){
+		 if($this->session->userdata('_verifiedUser'))
+		 	redirect(base_url().'home');
 		$this->load->view('user/login');
 	}
 	public function newaccount(){
 		$this->load->view('user/register');
 	}
 	public function storeDetails(){
+		 if(empty($this->session->userdata('_verifiedUser')) && !$this->session->userdata('_verifiedUser'))
+		 	redirect(base_url().'authentication');
 		$this->load->view('user/header');
 		$this->load->view('user/store_details');
 		$this->load->view('user/footer');
 	}
 	public function chat(){
+		 if(empty($this->session->userdata('_verifiedUser')) && !$this->session->userdata('_verifiedUser'))
+		 	redirect(base_url().'authentication');
 		$this->load->view('user/header');
 		$this->load->view('user/chat');
 		$this->load->view('user/footer');
 	}
 	public function chatList(){
+		 if(empty($this->session->userdata('_verifiedUser')) && !$this->session->userdata('_verifiedUser'))
+		 	redirect(base_url().'authentication');
 		$this->load->view('user/header');
 		$this->load->view('user/chat_list');
 		$this->load->view('user/footer');
 	}
 	public function myOrders(){
+		 if(empty($this->session->userdata('_verifiedUser')) && !$this->session->userdata('_verifiedUser'))
+		 	redirect(base_url().'authentication');
 		$this->load->view('user/header');
 		$this->load->view('user/my_order');
 		$this->load->view('user/footer');

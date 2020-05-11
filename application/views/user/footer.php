@@ -3,14 +3,9 @@
 <div class="divider divider-margins mb-n2"></div>
 <div class="content">
 <div class="list-group list-custom-small">
-<a href="#" data-toggle-theme data-trigger-switch="switch-dark-mode" class="pb-2 ml-n1">
-<i class="fa font-12 fa-moon rounded-s bg-highlight color-white mr-3"></i>
-<span>Dark Mode</span>
-<div class="custom-control scale-switch ios-switch">
-<input data-toggle-theme-switch type="checkbox" class="ios-input" id="switch-dark-mode">
-<label class="custom-control-label" for="switch-dark-mode"></label>
-</div>
-<i class="fa fa-angle-right"></i>
+<a href="<?php echo base_url()?>Users/logout" data-toggle-theme data-trigger-switch="switch-dark-mode" class="pb-2 ml-n1">
+<i class="fa font-12 fa-sign-out rounded-s bg-highlight color-white mr-3"></i>
+<span>Log Out</span>
 </a>
 </div>
 <div class="list-group list-custom-large">

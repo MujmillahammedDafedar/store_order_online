@@ -59,6 +59,16 @@ $route['store-details'] = $route['default_controller'].'/storeDetails';
 $route['chat'] = $route['default_controller'].'/chat';
 $route['my-chats'] = $route['default_controller'].'/chatList';
 $route['my-oders'] = $route['default_controller'].'/myOrders';
+$route['home'] = $route['default_controller'].'/UseHomepage';
+
+$route['shop'] = 'shop';
+
+$route['add-details'] = $route['shop'].'/AddShopDetails';
+$route['shop-auth'] = $route['shop'].'/login';
+$route['shop-homepage'] = $route['shop'].'/homepage';
+
+
+
 
 
 

@@ -15,6 +15,7 @@
 
 <link rel="manifest" href="_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
 <link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png">
+<script type="text/javascript" src="<?php echo base_url();?>assets/cities.js"></script>
 </head>
 <body class="theme-light" data-background="none" data-highlight="red2">
 
@@ -31,9 +32,8 @@
 <a href="#" data-toggle-theme class="header-icon header-icon-4"><i class="fas fa-lightbulb"></i></a>
 </div>
 <div id="footer-bar" class="footer-bar-1">
-<a href="<?php echo base_url()?>" ><i class="fa fa-home"></i><span>Home</span></a>
-<a href="<?php echo base_url()?>my-chats"><i class="fa fa-envelope"></i><span>Chat</span></a>
-<a href="<?php echo base_url()?>my-oders"><i class="fa fa-shopping-cart"></i>
+<a href="<?php echo base_url()?>Shop/homepage"><i class="fa fa-envelope"></i><span>Chat</span></a>
+<a href="<?php echo base_url()?>Shop/homepage"><i class="fa fa-shopping-cart"></i>
 <span>Oders list</span></a>
 <a href="#" data-menu="menu-settings"><i class="fa fa-cog"></i><span>Settings</span></a>
 </div>

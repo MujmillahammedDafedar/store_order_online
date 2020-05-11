@@ -2,7 +2,6 @@
 	class Users extends CI_Controller
 	{
 		public function userdata(){
-			
 			if($this->input->get('email')){
                  $checkEmailExist = $this->db->get_where('firebase_auth', array('email_' => $this->input->get('email')))->row(); 
                  if(empty($checkEmailExist)){
@@ -16,12 +15,55 @@
                  			'email_' => $this->input->get('email'), 
                  		);
                  		$this->db->insert('firebase_auth', $data);
+                 		$newdata = array(
+							'_verifiedUser'  => $this->input->get('email'),
+						);
+						$this->session->set_userdata($newdata);
                  		
                  		$this->session->set_flashdata('success', 'You have registered'); 
                  		echo "account registered and loged"; 
+                 		redirect('home');
 
                  } else {
-                 	 echo "activate session";
+                 	  $newdata = array(
+							'_verifiedUser'  => $checkEmailExist->email_,
+						);
+						$this->session->set_userdata($newdata);
+						redirect('home');
+
+                 }
+				
+			}
+		}
+		public function phoneAuth(){
+
+			if($this->input->get('phoneNumber')){
+                 $checkEmailExist = $this->db->get_where('firebase_auth', array('mobile_number' => $this->input->get('phoneNumber')))->row(); 
+                 if(empty($checkEmailExist)){
+                 //	Array ( [name] => Muzammil Dafedar [id] => 110095427481473300751 [picture] => https://lh3.googleusercontent.com/a-/AOh14Ghl3DZMkK-TuhwMQQSDbbefgUKKyd_-PKVyK7L7yA [verified_email] => true [email] => mujmildafedaar@gmail.com )
+                 	//this is array format
+                 		$data = array(
+                 			'mobile_number' => $this->input->get('phoneNumber'),
+                 			'lastSignInTime_'=> $this->input->get('lastSignInTime'),
+                 			'creationTime_' => $this->input->get('creationTime')
+                 		);
+                 		$this->db->insert('firebase_auth', $data);
+						$newdata = array(
+							'_verifiedUser'  => $this->input->get('phoneNumber'),
+						);
+						$this->session->set_userdata($newdata);
+                 		
+                 		$this->session->set_flashdata('success', 'You have registered'); 
+                 		echo "account registered and loged"; 
+                 		redirect('home');
+
+                 } else {
+                 	// echo "activate session";
+                 	 $newdata = array(
+							'_verifiedUser'  => $checkEmailExist->mobile_number,
+						);
+						$this->session->set_userdata($newdata);
+						redirect('home');
 
                  }
 				
@@ -29,7 +71,7 @@
 		}
 
 		public function dashboard(){
-			if(!$this->session->userdata('login')) {
+			if(!$this->session->userdata('_verifiedUser')) {
 				redirect('users/login');
 			}
 			$data['title'] = 'Dashboard';
@@ -71,6 +113,8 @@
 
 		// Log in User
 		public function login(){
+			$this->input->post('email'); 
+			redirect('home');
 			//$data['title'] = 'Sign In';
 
 			$this->form_validation->set_rules('username', 'Username', 'required');
@@ -110,13 +154,11 @@
 		// log user out
 		public function logout(){
 			// unset user data
-			$this->session->unset_userdata('login');
-			$this->session->unset_userdata('user_id');
-			$this->session->unset_userdata('username');
-
+			$this->session->unset_userdata('_verifiedUser');
+			
 			//Set Message
 			$this->session->set_flashdata('user_loggedout', 'You are logged out.');
-			redirect(base_url());
+			redirect('authentication');
 		}
 
 		// Check user name exists

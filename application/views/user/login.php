@@ -36,7 +36,9 @@
 <i class="input-icon fa fa-user color-theme"></i>
 <span>Mobile number</span>
 <em>(required)</em>
-<input type="tel" id="phoneNumber" name="number" placeholder="Enter Mobile number">
+<input type="tel" required id="phoneNumber" name="number" placeholder="Enter Mobile number">
+<div id="errorMesagea"></div>
+
 </div>
 <div class="input-style has-icon input-style-1 input-required pb-1">
 
@@ -47,7 +49,9 @@
 <i class="input-icon fa fa-lock color-theme"></i>
 <span>OTP</span>
 <em>(required)</em>
-<input type="text" name="password" id="code" placeholder="Enter OTP">
+<input type="text" name="password" required id="code" placeholder="Enter OTP">
+<div id="errorMesage"></div>
+<a href="#" onclick="submitPhoneNumberAuth()">Resend OTP</a>
 </div>
 <button type="submit" id="hidebutton"  onclick="submitPhoneNumberAuth()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark">Get otp</button>
 <button type="submit" id="submitOtp"  onclick="submitPhoneNumberAuthCode()" class="btn btn-m btn-full mb-3 rounded-xs text-uppercase font-900 shadow-s bg-green1-dark" style="display: none">Confirm</button>
@@ -237,7 +241,8 @@ You can continue with your previous actions.<br> Easy to attach these to success
         var phoneNumber = document.getElementById("phoneNumber").value;
         var appVerifier = window.recaptchaVerifier;
             getOtpbutton.style.display = "none";
-            confirmButton.style.display = "block";
+               captchId.style.display="block";
+
 
 
         firebase
@@ -247,13 +252,20 @@ You can continue with your previous actions.<br> Easy to attach these to success
             window.confirmationResult = confirmationResult;
                         divId.style.display = "block";
                         captchId.style.display="none";
+                        getOtpbutton.style.display = "none";
                         numberDiv.style.display="none";
-
-
-
+                        confirmButton.style.display = "block";
+                        console.log('confirm')
           })
           .catch(function(error) {
             console.log(error);
+            if(error.message == 'Invalid format.'){
+            document.getElementById("errorMesagea").innerHTML = error.message+'/Check your mobile number and click on Get OTP';
+                        getOtpbutton.style.display = "block";
+                          captchId.style.display="none";
+                      }
+
+
           });
       }
 
@@ -262,15 +274,21 @@ You can continue with your previous actions.<br> Easy to attach these to success
       // Return a user object if the authentication was successful, and auth is complete
       function submitPhoneNumberAuthCode() {
         var code = document.getElementById("code").value;
-
+ 
         confirmationResult
           .confirm(code)
           .then(function(result) {
             var user = result.user;
             console.log(user);
+            console.log(user.phoneNumber);
+       window.open("<?php echo base_url()?>Users/phoneAuth?phoneNumber="+user.phoneNumber+'&&creationTime='+user.metadata["creationTime"]+'&&lastSignInTime='+user.metadata["lastSignInTime"], '_self');
           })
           .catch(function(error) {
-            console.log(error);
+            //console.log(error);
+            //console.log(error.message);
+            //document.getElementById("errorMesage").value = error["message"];
+                        document.getElementById("errorMesage").innerHTML = 'Invalid OTP';
+
           });
       }
 
@@ -290,52 +308,8 @@ You can continue with your previous actions.<br> Easy to attach these to success
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/jquery.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/scripts/custom.js"></script>
-<script type="text/javascript">
-	// Resize reCAPTCHA to fit width of container
-// Since it has a fixed width, we're scaling
-// using CSS3 transforms
-// ------------------------------------------
-// captchaScale = containerWidth / elementWidth
-
-function scaleCaptcha(elementWidth) {
-  // Width of the reCAPTCHA element, in pixels
-  var reCaptchaWidth = 304;
-  // Get the containing element's width
-	var containerWidth = $('#recaptcha-container').width();
-  
-  // Only scale the reCAPTCHA if it won't fit
-  // inside the container
-  if(reCaptchaWidth > containerWidth) {
-    // Calculate the scale
-    var captchaScale = containerWidth / reCaptchaWidth;
-    // Apply the transformation
-    $('#recaptcha-container').css({
-      'transform':'scale('+captchaScale+')'
-    });
-  }
-}
-
-$(function() { 
- 
-  // Initialize scaling
-  scaleCaptcha();
-  
-  // Update scaling on window resize
-  // Uses jQuery throttle plugin to limit strain on the browser
-  $(window).resize( $.throttle( 100, scaleCaptcha ) );
-  
-});
-</script>
 <style type="text/css">
-	
-#recaptcha-container {
-width: 960px;
-position: relative;
-margin:0 auto;
-line-height: 1.4em;
-}
 
-/* If in mobile screen with maximum width 479px. The iPhone screen resolution is 320x480 px (except iPhone4, 640x960) */    
 @media (max-width: 1200px) {
   #recaptcha-container > div > div {
     transform: scale(0.9);
