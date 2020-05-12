@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Shop extends CI_Controller {
   public function userdata(){
       if($this->input->get('email')){
-                 $checkEmailExist = $this->db->get_where('firebase_auth', array('email_' => $this->input->get('email')))->row(); 
+                 $checkEmailExist = $this->db->get_where('store_auth', array('email_' => $this->input->get('email')))->row(); 
                  if(empty($checkEmailExist)){
                  // Array ( [name] => Muzammil Dafedar [id] => 110095427481473300751 [picture] => https://lh3.googleusercontent.com/a-/AOh14Ghl3DZMkK-TuhwMQQSDbbefgUKKyd_-PKVyK7L7yA [verified_email] => true [email] => mujmildafedaar@gmail.com )
                   //this is array format
@@ -15,7 +15,7 @@ class Shop extends CI_Controller {
                       'verified_email_' => $this->input->get('verified_email'), 
                       'email_' => $this->input->get('email'), 
                     );
-                    $this->db->insert('firebase_auth', $data);
+                    $this->db->insert('store_auth', $data);
                     $newdata = array(
               'verified_shop'  => $this->input->get('email'),
             );
@@ -40,7 +40,7 @@ class Shop extends CI_Controller {
 
 
       if($this->input->get('phoneNumber')){
-                 $checkEmailExist = $this->db->get_where('firebase_auth', array('mobile_number' => $this->input->get('phoneNumber')))->row(); 
+                 $checkEmailExist = $this->db->get_where('store_auth', array('mobile_number' => $this->input->get('phoneNumber')))->row(); 
                  if(empty($checkEmailExist)){
                  // Array ( [name] => Muzammil Dafedar [id] => 110095427481473300751 [picture] => https://lh3.googleusercontent.com/a-/AOh14Ghl3DZMkK-TuhwMQQSDbbefgUKKyd_-PKVyK7L7yA [verified_email] => true [email] => mujmildafedaar@gmail.com )
                   //this is array format
@@ -49,7 +49,7 @@ class Shop extends CI_Controller {
                       'lastSignInTime_'=> $this->input->get('lastSignInTime'),
                       'creationTime_' => $this->input->get('creationTime')
                     );
-                    $this->db->insert('firebase_auth', $data);
+                    $this->db->insert('store_auth', $data);
             $newdata = array(
               'verified_shop'  => $this->input->get('phoneNumber'),
             );
@@ -82,6 +82,34 @@ class Shop extends CI_Controller {
     	$this->load->view('shop/header');
     	$this->load->view('shop/homepage');
     	$this->load->view('shop/footer');
+
+    }
+    public function profileSetting(){
+      if(!$this->session->userdata('verified_shop'))
+            redirect('shop-auth');
+          $val = $this->Shop_Model->CheckDataExist();
+          if($val == false){
+            redirect('add-details');
+          }
+          $data['setArray']= $this->Shop_Model->getAccount();
+      $this->load->view('shop/header');
+      $this->load->view('shop/profile-setting',$data);
+      $this->load->view('shop/footer');
+
+    }
+
+    public function updateshopdata(){
+      if(!$this->session->userdata('verified_shop'))
+            redirect('shop-auth');
+          $val = $this->Shop_Model->CheckDataExist();
+          if($val == false){
+            redirect('add-details');
+          }
+          $this->Shop_Model->updateddata();
+      $data['setArray'] =  $this->Shop_Model->getShopdata();
+      $this->load->view('shop/header');
+      $this->load->view('shop/update-shop-details',$data);
+      $this->load->view('shop/footer');
 
     }
     public function AddShopDetails(){

@@ -66,6 +66,9 @@ $route['shop'] = 'shop';
 $route['add-details'] = $route['shop'].'/AddShopDetails';
 $route['shop-auth'] = $route['shop'].'/login';
 $route['shop-homepage'] = $route['shop'].'/homepage';
+$route['shop-update'] = $route['shop'].'/updateshopdata';
+$route['my-profile'] = $route['shop'].'/profileSetting';
+
 
 
 
